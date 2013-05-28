@@ -56,7 +56,6 @@ int main()
     // register.
     Register ri, rj, rk;
     Comment comment;
-    // It would be nice to sink the rest into a comment.
 
     std::istringstream stream(line);
     stream >> label >> instruction >> rk >> ri >> rj >> comment;
@@ -65,4 +64,31 @@ int main()
     std::cout << rk.number << std::endl;
     std::cout << comment.remark << std::endl;
   }
+
+  // Third example, this time determining how to parse it.
+  {
+    std::cout << std::endl
+              << "Third example, this time determining how to parse it."
+              << std::endl;
+
+    Label label;
+    Instruction instruction;
+    Register ri, rj, rk;
+    Comment comment;
+
+    const std::string line("start: add r1, r2, r3 ; Hello world");
+    std::istringstream stream(line);
+
+    if (startsWithLabel(stream))
+    {
+      stream >> label >> instruction >> rk >> ri >> rj >> comment;
+      std::cout << "Label: " << label.name << std::endl;
+    }
+    else
+    {
+      stream >> instruction >> rk >> ri >> rj >> comment;
+      std::cout << "Instruction: " << instruction.mnemonic << std::endl;
+    }
+  }
+
 };

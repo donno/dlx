@@ -30,6 +30,7 @@
 
 #include "Types.hpp"
 
+#include <cctype>
 #include <ios>
 #include <sstream>
 
@@ -98,6 +99,12 @@ namespace
       state |= std::ios_base::failbit;
     source.setstate(state);
   }
+}
+
+bool dlx::assembly::startsWithLabel(std::istream& source)
+{
+  // If the next character is is an alpha character, it is likely a label.
+  return std::isalpha(source.peek());
 }
 
 std::istream& dlx::assembly::operator >>(
