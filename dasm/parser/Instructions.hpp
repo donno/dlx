@@ -17,6 +17,7 @@
 
 #include "Types.hpp"
 
+#include <map>
 #include <string>
 
 namespace dlx
@@ -25,16 +26,21 @@ namespace dlx
   {
     struct InstructionDef
     {
+      InstructionDef(
+        const std::string& mnemonic, int opcode, Instruction::Format format);
+
       const std::string mnemonic;
       const int opcode;
       const Instruction::Format format;
     };
-    
+
     namespace instructions
     {
-      const InstructionDef add = {
-        "add", 000000, Instruction::RegisterToRegister
-        };
+      typedef std::map<std::string, InstructionDef*> InstructionMap;
+      const InstructionMap& all();
+
+      const InstructionDef add("add", 000000, Instruction::RegisterToRegister);
+      const InstructionDef sub("sub", 000000, Instruction::RegisterToRegister);
     }
   }
 }

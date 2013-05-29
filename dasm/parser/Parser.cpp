@@ -104,19 +104,17 @@ namespace
 
 static dlx::assembly::Instruction::Format formatFromMnemonic(
   const std::string& mnemonic)
-{
-  // TODO: Do this a better way, propbably by having a constructor which builds
-  // a map of mnemonic to formats or least the instances of the class.
-  using namespace dlx::assembly::instructions;
-  if (mnemonic == add.mnemonic)
+{  
+  auto instruction = dlx::assembly::instructions::all().find(mnemonic);
+  if (instruction != dlx::assembly::instructions::all().end())
   {
-    return add.format;
-  }
+    return instruction->second->format;
+  } 
   else
   {
-    return dlx::assembly::Instruction::Immediate;
+    // TODO: Consider throwing an exception here instead.
+    return dlx::assembly::Instruction::Unknown;
   }
-  
 }
 
 bool dlx::assembly::startsWithLabel(std::istream& source)
