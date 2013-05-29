@@ -38,6 +38,18 @@ namespace dlx
     struct Instruction
     {
       std::string mnemonic;
+      
+      enum Format
+      {
+        // Returned when the format is not known.
+        Unknown,
+        // This is followed by Lsgn/Lusn where L is 26-bit (number/label).
+        LongImmediate, 
+        // This is followed by register, register, Ksgn/Usgn, where K is 16-bit.
+        Immediate,
+        // This is followed by register, register and another register.
+        RegisterToRegister
+      };
     };
 
     struct Register
