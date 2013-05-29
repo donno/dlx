@@ -38,7 +38,7 @@ namespace dlx
     struct Instruction
     {
       std::string mnemonic;
-      
+
       enum Format
       {
         // Returned when the format is not known.
@@ -50,6 +50,8 @@ namespace dlx
         // This is followed by register, register and another register.
         RegisterToRegister
       };
+      
+      Format format; 
     };
 
     struct Register

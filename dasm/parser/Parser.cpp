@@ -19,7 +19,7 @@
 //
 // Instruction formats:
 // * Long-immediate: <instruction> Lsgn/Lusn
-// * Immedate <instruction> <register>, <register>, <Ksgn/Kusgn>
+// * Immediate <instruction> <register>, <register>, <Ksgn/Kusgn>
 // * Register to Register: <instruction> <register>, <register>, <register>
 //   An alternative to this is the shorcuts:
 //   <instruction> <register>, <register>  ; For example mv instruction.
@@ -28,6 +28,7 @@
 
 #include "Parser.hpp"
 
+#include "Instructions.hpp"
 #include "Types.hpp"
 
 #include <cctype>
@@ -101,6 +102,23 @@ namespace
   }
 }
 
+static dlx::assembly::Instruction::Format formatFromMnemonic(
+  const std::string& mnemonic)
+{
+  // TODO: Do this a better way, propbably by having a constructor which builds
+  // a map of mnemonic to formats or least the instances of the class.
+  using namespace dlx::assembly::instructions;
+  if (mnemonic == add.mnemonic)
+  {
+    return add.format;
+  }
+  else
+  {
+    return dlx::assembly::Instruction::Immediate;
+  }
+  
+}
+
 bool dlx::assembly::startsWithLabel(std::istream& source)
 {
   // If the next character is is an alpha character, it is likely a label.
@@ -118,6 +136,7 @@ std::istream& dlx::assembly::operator >>(
   std::istream& source, dlx::assembly::Instruction& instruction)
 {
   source >> instruction.mnemonic;
+  instruction.format = formatFromMnemonic(instruction.mnemonic);  
   return source;
 }
 

@@ -11,6 +11,7 @@
 //===----------------------------------------------------------------------===//
 
 #include "parser/Parser.hpp"
+#include "parser/Instructions.hpp"
 #include "parser/Types.hpp"
 
 #include <fstream>
@@ -91,4 +92,40 @@ int main()
     }
   }
 
+  // Test the instructions
+  {
+    using namespace dlx::assembly::instructions;
+    Instruction instruction; Register ri, rj, rk; Comment comment;
+
+    const std::string line("add r1,r2, r3 ; Hello world");
+    std::istringstream stream(line);
+    stream >> instruction;
+
+    // Determine what to extract next based on the format of the instruction.
+    switch (instruction.format)
+    {
+      case Instruction::LongImmediate:
+        // NYI: Support for extracting a Lsgn/Lsgn is not yet supported.
+        std::cerr << "Not supported: extracting an instruction with an ommedate"
+                  << std::endl;
+        break;
+      case Instruction::Immediate:
+        // NYI: Support for extracting a Ksgn/Ksgn is not yet supported.
+        std::cerr << "Not supported: extracting an instruction with an ommedate"
+                  << std::endl;
+        break;
+      case Instruction::RegisterToRegister:
+        // This is followed by register, register and another register.
+        stream >> rk >> ri >> rj >> comment;
+
+        std::cout
+        << "r" << rk.number << " = r" << ri.number
+        << " " << instruction.mnemonic << " r" << rj.number
+        << " // " << comment.remark
+        << std::endl;
+        break;
+      default:
+        std::cerr << "Unknown" << std::endl;
+    };
+  }
 };
