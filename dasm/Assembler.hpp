@@ -28,16 +28,18 @@ namespace dlx
   {
     class Assembler
     {
+      std::string myFilename;
       std::istream& mySource;
       dlx::assembly::Lexer myLexer;
       dlx::assembly::SymbolTable mySymbolTable;
       dlx::assembly::Label myPreviousLabel;
       unsigned long long myLocationCounter;
 
+      void error(const char* message) const;
       void directive(const std::string& directive, const std::string& operand);
 
     public:
-      Assembler(std::istream& source);
+      Assembler(const std::string& filename, std::istream& source);
 
       void assemble();
 

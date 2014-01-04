@@ -22,10 +22,10 @@
 #include <iomanip>
 #include <sstream>
 
-void error(const char* message)
+void dlx::assembly::Assembler::error(const char* message) const
 {
-  // TODO: Add filename, line and column.
-  std::cerr << "error:" << message << std::endl;
+  // TODO: Add line and column.
+  std::cerr << myFilename << ":error:" << message << std::endl;
 }
 
 void dlx::assembly::Assembler::directive(
@@ -98,8 +98,11 @@ void dlx::assembly::Assembler::directive(
   }
 }
 
-dlx::assembly::Assembler::Assembler(std::istream& source)
-: mySource(source),
+dlx::assembly::Assembler::Assembler(
+  const std::string& filename,
+  std::istream& source)
+: myFilename(filename),
+  mySource(source),
   myLexer(source),
   mySymbolTable(),
   myPreviousLabel(),

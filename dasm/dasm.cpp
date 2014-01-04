@@ -63,7 +63,7 @@ void assemble(const std::string& filename)
     return;
   }
 
-  dlx::assembly::Assembler assembler(file);
+  dlx::assembly::Assembler assembler(filename, file);
   assembler.assemble();
   assembler.printSymbolTable();
 }
