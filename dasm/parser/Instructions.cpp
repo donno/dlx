@@ -24,7 +24,7 @@ dlx::assembly::instructions::all()
   return allInstructions();
 }
 
-dlx::assembly::InstructionDef::InstructionDef(
+dlx::assembly::InstructionDefinition::InstructionDefinition(
   const std::string& mnemonic, int opcode, Instruction::Format format)
 : mnemonic(mnemonic), opcode(opcode), format(format)
 {
