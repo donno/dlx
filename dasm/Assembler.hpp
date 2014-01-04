@@ -32,6 +32,7 @@ namespace dlx
       dlx::assembly::Lexer myLexer;
       dlx::assembly::SymbolTable mySymbolTable;
       dlx::assembly::Label myPreviousLabel;
+      unsigned long long myLocationCounter;
 
       void directive(const std::string& directive, const std::string& operand);
 

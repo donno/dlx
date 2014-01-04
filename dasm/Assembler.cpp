@@ -22,6 +22,12 @@
 #include <iomanip>
 #include <sstream>
 
+void error(const char* message)
+{
+  // TODO: Add filename, line and column.
+  std::cerr << "error:" << message << std::endl;
+}
+
 void dlx::assembly::Assembler::directive(
   const std::string& directive,
   const std::string& operand)
@@ -33,6 +39,59 @@ void dlx::assembly::Assembler::directive(
     // operand.
     mySymbolTable[myPreviousLabel.name] = operand;
   }
+  else if (directive == ".start")
+  {
+    // .start tells the assembler to record where the program should begin
+    // execution.
+    //
+    // This information is stored in symbol table to store under the name
+    // #.start which is name that can't be used in the source code.
+    const std::string symbolName = '#' + directive;
+    const auto position = mySymbolTable.lower_bound(symbolName);
+    if (position != mySymbolTable.end() && position->first == symbolName)
+    {
+      error("Start address redefined");
+    }
+    else
+    {
+      mySymbolTable.insert(position, std::make_pair(symbolName, operand));
+    }
+  }
+  else if (directive == ".word")
+  {
+    // .word tells the assembler to allocate space at the current location for
+    // storing a word as well as the value to store in it.
+
+    // TODO: Actually read the operand and store the value.
+
+    myLocationCounter += 4;
+  }
+  else if (directive == ".space")
+  {
+    // .space tells the assembler to allocate space at the current location.
+
+    // TODO: Write a better operand parser for directives which returns the
+    // number.
+
+    std::locale locale;
+    if (std::all_of(operand.cbegin(), operand.cend(),
+                    [&](char c) { return std::isdigit(c, locale) != 0; }))
+    {
+      // Convert numbers to integers then output them as hex.
+      std::stringstream stream(operand);
+      long long value;
+      stream >> value;
+
+      // TODO: This will need to allocate the space in the output object.
+
+      myLocationCounter += value;
+    }
+    else
+    {
+      std::cerr << "can't handle this .space directive: " << operand
+                << std::endl;
+    }
+  }
   else
   {
     std::cout << "Directive: " << directive << std::endl;
@@ -41,7 +100,10 @@ void dlx::assembly::Assembler::directive(
 
 dlx::assembly::Assembler::Assembler(std::istream& source)
 : mySource(source),
-  myLexer(source)
+  myLexer(source),
+  mySymbolTable(),
+  myPreviousLabel(),
+  myLocationCounter(0)
 {
 }
 
@@ -59,7 +121,8 @@ void dlx::assembly::Assembler::assemble()
       // Convert the token into a strongly typed label.
       std::istringstream source(token.value);
       source >> myPreviousLabel;
-      mySymbolTable[myPreviousLabel.name] = std::string();
+      mySymbolTable[myPreviousLabel.name] =
+        std::to_string(myLocationCounter);
       break;
     }
     case dlx::assembly::Token::Instruction:
