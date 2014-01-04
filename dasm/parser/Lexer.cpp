@@ -42,6 +42,7 @@ dlx::assembly::Token dlx::assembly::Lexer::Next()
   // a way to preserve blank lines.
   while (line.empty())
   {
+    ++myLine;
     std::getline(myStream, line);
   }
 
@@ -82,10 +83,12 @@ dlx::assembly::Token dlx::assembly::Lexer::Next()
     else if (currentEnd == line.cend())
     {
       token.value = std::move(line);
+      myColumn = newStart + 1;
     }
     else
     {
       token.value.assign(line.cbegin(), currentEnd);
+      myColumn = newStart + 1;
     }
   }
   else if (std::isalpha(line[0], myLocale))

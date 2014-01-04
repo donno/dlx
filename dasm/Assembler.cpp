@@ -24,8 +24,10 @@
 
 void dlx::assembly::Assembler::error(const char* message) const
 {
-  // TODO: Add line and column.
-  std::cerr << myFilename << ":error:" << message << std::endl;
+  std::cerr << myFilename
+            << ':' << myLexer.Line()
+            << ':' << myLexer.Column()
+            << ": " << message << std::endl;
 }
 
 void dlx::assembly::Assembler::directive(
