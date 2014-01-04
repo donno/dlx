@@ -164,4 +164,11 @@ std::istream& dlx::assembly::operator >>(
   return source;
 }
 
+std::istream& dlx::assembly::operator >>(
+  std::istream& source, dlx::assembly::Immediate& immediate)
+{
+  source >> immediate.Kusn;
+  return source;
+}
+
 //===--------------------------- End of the file --------------------------===//

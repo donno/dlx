@@ -44,20 +44,32 @@ namespace dlx
         // Returned when the format is not known.
         Unknown,
         // This is followed by Lsgn/Lusn where L is 26-bit (number/label).
-        LongImmediate, 
+        LongImmediate,
         // This is followed by register, register, Ksgn/Usgn, where K is 16-bit.
         Immediate,
         // This is followed by register, register and another register.
         RegisterToRegister
       };
-      
-      Format format; 
+
+      Format format;
     };
 
     struct Register
     {
       char type; // r = integer, f = floating point.
       unsigned short number;
+    };
+
+    // Maybe this should be templated, and have a 16-bit vs 26-bit
+    // version. Additionally, if the >> operator does negative checking how does
+    // it know if its expected to be signed or not.
+    struct Immediate
+    {
+      union
+      {
+        unsigned short Kusn;
+        short Ksgn;
+      };
     };
   }
 }
