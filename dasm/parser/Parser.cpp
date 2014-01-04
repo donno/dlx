@@ -33,6 +33,7 @@
 
 #include <cctype>
 #include <ios>
+#include <iostream>
 #include <sstream>
 
 // Functions for helping with the implementation of the >> operators.
@@ -113,6 +114,7 @@ static dlx::assembly::Instruction::Format formatFromMnemonic(
   else
   {
     // TODO: Consider throwing an exception here instead.
+    std::cerr << "Unknown instruction mnemonic: " << mnemonic << std::endl;
     return dlx::assembly::Instruction::Unknown;
   }
 }
