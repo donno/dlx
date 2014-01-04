@@ -10,9 +10,12 @@
 //
 //===----------------------------------------------------------------------===//
 
+#include "Assembler.hpp"
+
 #include "parser/Lexer.hpp"
 #include "parser/Parser.hpp"
 #include "parser/Instructions.hpp"
+#include "parser/SymbolTable.hpp"
 #include "parser/Types.hpp"
 
 #include <algorithm>
@@ -60,40 +63,8 @@ void assemble(const std::string& filename)
     return;
   }
 
-  dlx::assembly::Lexer lexer(file);
-  dlx::assembly::Label previousLabel;
-  while (!file.eof())
-  {
-    const dlx::assembly::Token token = lexer.Next();
-    switch (token.type)
-    {
-    case dlx::assembly::Token::Comment:
-      continue;
-    case dlx::assembly::Token::Label:
-    {
-      // Convert the token into a strongly typed label.
-      std::istringstream source(token.value);
-      source >> previousLabel;
-      std::cout << "Label: " << previousLabel.name << std::endl;
-      break;
-    }
-    case dlx::assembly::Token::Instruction:
-    {
-      dlx::assembly::Instruction instruction;
-      std::istringstream source(token.value);
-      source >> instruction;
-      if (instruction.format == dlx::assembly::Instruction::Directive)
-      {
-        std::cout << "Directive: " << instruction.mnemonic << std::endl;
-      }
-      else
-      {
-        std::cout << "Instruction: " << instruction.mnemonic << std::endl;
-      }
-      break;
-    }
-    }
-  }
+  dlx::assembly::Assembler assembler(file);
+  assembler.assemble();
 }
 
 // TODO: Test cases
