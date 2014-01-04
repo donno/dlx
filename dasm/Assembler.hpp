@@ -19,6 +19,9 @@
 
 #include <fstream>
 
+#include <map>
+#include <string>
+
 namespace dlx
 {
   namespace assembly
@@ -36,6 +39,8 @@ namespace dlx
       Assembler(std::istream& source);
 
       void assemble();
+
+      void printSymbolTable() const;
     };
   }
 }

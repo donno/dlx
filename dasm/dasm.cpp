@@ -65,6 +65,7 @@ void assemble(const std::string& filename)
 
   dlx::assembly::Assembler assembler(file);
   assembler.assemble();
+  assembler.printSymbolTable();
 }
 
 // TODO: Test cases
