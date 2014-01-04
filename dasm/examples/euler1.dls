@@ -1,0 +1,74 @@
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;                                                                       ;
+;       euler1 - The first problem on Project Euler.                    ;
+;                                                                       ;
+;       Written 2014-01-03, Sean Donnellan                              ;
+;                                                                       ;
+;       The problem:                                                    ;
+;         Find the sum of all the multiples of 3 or 5 below 1000        ;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+	.start main
+
+main:
+	jal euler1
+	halt
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;                                                                       ;
+;       euler1  Computes sum of all multiples of 3 or 5 below 1000      ;
+;                                                                       ;
+;       Entry   jal euler1                                              ;
+;                                                                       ;
+;       Exit    r1 containing the result                                ;
+;                                                                       ;
+;       Uses    r1,r2,r3, r4                                            ;
+;                                                                       ;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;
+; This is really the sum of all multiples of 3 less than 1000 added with
+; the sum of all multiples less than 5 but not divisble by 3.
+;
+; sum = 0
+; for (int a = 3; a < 1000; a += 3)
+;   sum += a
+;
+; for (int a = 5; a < 1000; a += 5)
+;   if (a is not divisble by 3)
+;      sum += a
+;
+; This uses a simple solution for determing if a number is divisble by 3,
+; however it is not the most efficent in terms of instruction count.
+;
+; while (a > 3) a -= 3
+; a was divsible by 3 if it now equals 3.
+;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+euler1:
+	clr	r1		; r1 is the sum
+	clr	r2		; r2 is the induction variable
+
+euler1_L1:
+	add	r1, r1, r2	; sum += multiple of 3
+	addi	r2, r2, 3	; r2 is an induction variable.
+	slti	r3, r2, 1000	; Ensure r2 is less than 1000 keep going.
+	bt	r3, euler1_L1
+
+	clr	r2
+euler1_L3:
+	addi	r2, r2, 5
+	slti	r3, r2, 1000	; Ensure r2 is less than 1000 if not skip.
+	bf	r3, euler1_L5
+
+	; Only add r2 to sum if it is not divisble by 3.
+	mov	r4,	r2
+euler1_L4:
+	subi	r4, r4, 3	; r4 -= 3
+	sgti	r3, r4,	3	; while(r4 > 3)
+	bt	r3, euler1_L4
+	seqi	r3, r4,	3	; r3 = (r4 == 3)
+	bt	r3, euler1_L3	; r2 is a multiple of 3 so don't add it.
+	add	r1, r1, r2	; sum += multiple of 5
+	j	euler1_L3
+euler1_L5:
+	jr	r31	; Done
