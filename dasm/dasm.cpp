@@ -14,9 +14,51 @@
 #include "parser/Instructions.hpp"
 #include "parser/Types.hpp"
 
+#include <algorithm>
 #include <fstream>
 #include <iostream>
 #include <sstream>
+#include <vector>
+
+namespace
+{
+  // Provides a convenient way of processing command line arguments.
+  class ArgumentParser
+  {
+    std::string myProgramName;
+    std::vector<std::string> myPositionalArugments;
+
+    typedef std::vector<std::string>::const_iterator const_iterator;
+    typedef std::vector<std::string>::size_type size_type;
+  public:
+    void parse(int argc, char* argv[]);
+
+    // Get the positional arguments.
+    const_iterator begin() const { return myPositionalArugments.begin(); }
+    const_iterator end() const { return myPositionalArugments.end(); }
+    size_type size() const { return myPositionalArugments.size(); }
+    // Consider adding an operator[] for getting the positional arguments as well.
+  };
+}
+
+void ArgumentParser::parse(int argc, char* argv[])
+{
+  myProgramName = std::string(argv[0]);
+  myPositionalArugments.insert(
+    myPositionalArugments.begin(), argv+1, argv + argc);
+}
+
+void assemble(const std::string& filename)
+{
+  std::cout << "Assembling " << filename << std::endl;
+  std::ifstream file(filename);
+  if (!file)
+  {
+    std::cerr << "Failed to read: " << filename << std::endl;
+    // This needs to flag to the main() that there was an error.
+    return;
+  }
+}
 
 // TODO: Test cases
 //
@@ -25,8 +67,32 @@
 //  "add a1,g2, sag ; Hello world"
 //
 //   stream >> instruction >> rk >> ri >> rj;
-int main()
+int main(int argc, char* argv[])
 {
+  ArgumentParser arguments;
+  // Register arguments.
+  //
+  //  -l   Generates a listing of your program and displays it to the terminal.
+  //       The listing shows how the assembler translated the program and
+  //       includes the symbol table.
+  //
+  //  -o <filename> The name of the object file or directory for saving objects
+  //                if multiple source files are provided.
+  //
+  // The following two options are mutally exlusive:
+  //   -a   Generate absoloute machine code.
+  //   -r   Generate relocatable machine code.
+  //
+  // TODO: Implement the argument registration and usage.
+  arguments.parse(argc, argv);
+
+  if (arguments.size() > 0)
+  {
+    // Assemble the source files provided on the command line.
+    std::for_each(arguments.begin(), arguments.end(), assemble);
+    return 0;
+  }
+
   using namespace dlx::assembly;
 
   // Example of an alternative parser, aimed at being typed and easier to read.
