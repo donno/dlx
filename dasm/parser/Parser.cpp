@@ -114,7 +114,7 @@ static dlx::assembly::Instruction::Format formatFromMnemonic(
   if (instruction != dlx::assembly::instructions::all().end())
   {
     return instruction->second->format;
-  } 
+  }
   else
   {
     // TODO: Consider throwing an exception here instead.
@@ -133,6 +133,11 @@ std::istream& dlx::assembly::operator >>(
   std::istream& source, dlx::assembly::Label& label)
 {
   source >> label.name;
+  if (*label.name.rbegin() == ':')
+  {
+    // Remove the colon at the end of the label.
+    label.name.erase(label.name.end() - 1);
+  }
   return source;
 }
 
@@ -140,7 +145,7 @@ std::istream& dlx::assembly::operator >>(
   std::istream& source, dlx::assembly::Instruction& instruction)
 {
   source >> instruction.mnemonic;
-  instruction.format = formatFromMnemonic(instruction.mnemonic);  
+  instruction.format = formatFromMnemonic(instruction.mnemonic);
   return source;
 }
 
