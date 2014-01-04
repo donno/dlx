@@ -43,6 +43,9 @@ namespace dlx
       {
         // Returned when the format is not known.
         Unknown,
+        // This means it is an assembler directive rather than machine
+        // instruction.
+        Directive,
         // This is followed by Lsgn/Lusn where L is 26-bit (number/label).
         LongImmediate,
         // This is followed by register, register, Ksgn/Usgn, where K is 16-bit.

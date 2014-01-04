@@ -106,6 +106,10 @@ namespace
 static dlx::assembly::Instruction::Format formatFromMnemonic(
   const std::string& mnemonic)
 {  
+  if (!mnemonic.empty() && mnemonic[0] == '.')
+  {
+    return dlx::assembly::Instruction::Directive;
+  }
   auto instruction = dlx::assembly::instructions::all().find(mnemonic);
   if (instruction != dlx::assembly::instructions::all().end())
   {
