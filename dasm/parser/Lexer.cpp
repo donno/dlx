@@ -25,6 +25,7 @@
 
 #include <algorithm>
 #include <sstream>
+#include <iostream>
 
 dlx::assembly::Token dlx::assembly::Lexer::Next()
 {
@@ -34,6 +35,7 @@ dlx::assembly::Token dlx::assembly::Lexer::Next()
   {
     // There were left-overs from the last line that was read.
     line.swap(myLeftOvers);
+    myLeftOvers.clear();
   }
 
   // Ignore blank lines. For a pretty printer it might be good if there was
@@ -53,11 +55,31 @@ dlx::assembly::Token dlx::assembly::Lexer::Next()
   {
     token.type = Token::Instruction;
 
+    // Find the first non-whitespace charachter on the rest of the line.
+    //
+    // If the first non-whitespace charachter is a charachter then there is no
+    // instruction. This is likely because the user is trying to line up the
+    // comment with the one of the previous line and instruction.
+    const auto newStart = line.find_first_not_of(" \t");
+
     // Find the first comment charachter on the line as this indicates the
     // end of the instruction.
-    const auto currentEnd = std::find(line.cbegin(), line.cend(), ';');
+    const auto currentEnd =
+      std::find(line.cbegin() + newStart, line.cend(), ';');
 
-    if (currentEnd == line.cend())
+    if (newStart == std::string::npos)
+    {
+      // The line was nothing but white-space, so return the next token instead.
+      token = Next();
+    }
+    else if (newStart == currentEnd - line.cbegin())
+    {
+      // There was no instruction on the line but there was a comment so
+      // return that instead.
+      token.type = Token::Comment;
+      token.value.assign(currentEnd, line.cend());
+    }
+    else if (currentEnd == line.cend())
     {
       token.value = std::move(line);
     }
