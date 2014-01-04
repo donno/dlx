@@ -40,7 +40,7 @@ dlx::assembly::Token dlx::assembly::Lexer::Next()
 
   // Ignore blank lines. For a pretty printer it might be good if there was
   // a way to preserve blank lines.
-  while (line.empty())
+  while (line.empty() && !myStream.eof())
   {
     ++myLine;
     std::getline(myStream, line);
