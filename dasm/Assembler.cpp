@@ -144,6 +144,7 @@ void dlx::assembly::Assembler::assemble()
       else
       {
         std::cout << "Instruction: " << instruction.mnemonic << std::endl;
+        myLocationCounter += 4; // An instruction is always 4-bytes.
       }
       break;
     }
