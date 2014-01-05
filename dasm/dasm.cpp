@@ -180,12 +180,12 @@ int main(int argc, char* argv[])
     {
       case Instruction::LongImmediate:
         // NYI: Support for extracting a Lsgn/Lsgn is not yet supported.
-        std::cerr << "Not supported: extracting an instruction with an ommedate"
+        std::cerr << "Unsupported: extracting an instruction with an immediate"
                   << std::endl;
         break;
       case Instruction::Immediate:
         // NYI: Support for extracting a Ksgn/Ksgn is not yet supported.
-        std::cerr << "Not supported: extracting an instruction with an ommedate"
+        std::cerr << "Unsupported: extracting an instruction with an immediate"
                   << std::endl;
         break;
       case Instruction::RegisterToRegister:
