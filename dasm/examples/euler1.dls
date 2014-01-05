@@ -61,7 +61,7 @@ euler1_L3:
 	bf	r3, euler1_L5
 
 	; Only add r2 to sum if it is not divisble by 3.
-	mov	r4,	r2
+	add	r4, r0, r2  ; r4 = current multiple of 5.
 euler1_L4:
 	subi	r4, r4, 3	; r4 -= 3
 	sgti	r3, r4,	3	; while(r4 > 3)
