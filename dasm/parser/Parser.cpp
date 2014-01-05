@@ -168,6 +168,8 @@ std::istream& dlx::assembly::operator >>(
   std::string word;
   read(source, word);
 
+  register_.number = 0;
+
   std::istringstream ss(word);
   ss >> register_.type;
   ss >> register_.number;
