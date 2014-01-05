@@ -1,0 +1,11 @@
+# Ignore the build files.
+build/*
+.lock-waf_win32_build
+
+# Ignore additional files that shouldn't be comitted.
+#
+# The University of Adelaide implementation of dasm/dsim.
+*.jar
+# Already assembled DLX source files.
+*.dlx
+#
