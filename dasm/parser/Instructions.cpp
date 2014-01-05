@@ -12,6 +12,8 @@
 
 #include "Instructions.hpp"
 
+#include <cassert>
+
 static dlx::assembly::instructions::InstructionMap& allInstructions()
 {
   static dlx::assembly::instructions::InstructionMap map;
@@ -26,7 +28,17 @@ dlx::assembly::instructions::all()
 
 dlx::assembly::InstructionDefinition::InstructionDefinition(
   const std::string& mnemonic, int opcode, Instruction::Format format)
-: mnemonic(mnemonic), opcode(opcode), format(format)
+: mnemonic(mnemonic), opcode(opcode), modifier(0), format(format)
+{
+  // This construction shouldn't be used for register-to-register instructions.
+  assert(format != Instruction::RegisterToRegister);
+  allInstructions().insert(std::make_pair(mnemonic, this));
+}
+
+dlx::assembly::InstructionDefinition::InstructionDefinition(
+  const std::string& mnemonic, int opcode, int modifier)
+: mnemonic(mnemonic), opcode(opcode), modifier(modifier),
+  format(Instruction::RegisterToRegister)
 {
   allInstructions().insert(std::make_pair(mnemonic, this));
 }
