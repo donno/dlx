@@ -1,0 +1,53 @@
+#! /usr/bin/env python
+# encoding: utf-8
+# Build script for using waf.
+
+# the following two variables are used by the target "waf dist"
+VERSION='0.0.1'
+APPNAME='dasm'
+
+# these variables are mandatory ('/' are converted automatically)
+top = '.'
+out = 'build/dasm'
+
+
+def options(opt):
+  opt.load('compiler_cxx waf_unit_test')
+
+
+def configure(conf):
+  conf.load('compiler_cxx waf_unit_test')
+
+
+  # Ensure we have at least one of the C++ standard library headers.
+  conf.check(header_name='vector', features='cxx cxxprogram', mandatory=False)
+
+
+def build(bld):
+  # Build the core as a library so it can be re-used by future tools and tests.
+  bld.stlib(
+    source=[
+      'parser/Instructions.cpp',
+      'parser/Lexer.cpp',
+      'parser/Parser.cpp',
+      'parser/Types.cpp',
+    ],
+    cxxflags=['/EHsc'],
+    target='libdlxasm',
+    vnum=VERSION)
+
+  # Build the executable.
+  bld.program(
+    source=[
+      'dasm.cpp',
+      'Assembler.cpp',
+      ],
+    cxxflags=['/EHsc'],
+    target='dasm',
+    use='libdlxasm',
+    )
+
+  if bld.cmd != 'clean':
+    from waflib import Logs
+    bld.logger = Logs.make_logger('test.log', 'build') # just to get a clean output
+    bld.logger = None
