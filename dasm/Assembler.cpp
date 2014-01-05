@@ -190,11 +190,23 @@ void dlx::assembly::Assembler::assemble()
         else if (instruction.format ==
                    dlx::assembly::Instruction::Immediate)
         {
-          std::cout << "Instruction: " << instruction.format << std::endl;
+          const auto def =
+            dlx::assembly::instructions::all().find(instruction.mnemonic);
+          const auto opcode = def->second->opcode;
+
+          Register ri, rj;
+          source >> rj >> ri;
+
+          std::cout << "Instruction: " << instruction.mnemonic << std::endl;
+          const uint16_t Kuns = 0; // 16-bit immediate.
+          const uint32_t instructionEncoding =
+            Kuns + (rj.number << 16) + (ri.number << 21) + (opcode << 26);
+          outputListing(myLocationCounter, instructionEncoding, token.value,
+                        std::cout);
         }
         else
         {
-          std::cout << "Instruction: " << instruction.format << std::endl;
+          std::cout << "Instruction: " << instruction.mnemonic << std::endl;
         }
         myLocationCounter += 4; // An instruction is always 4-bytes.
       }
