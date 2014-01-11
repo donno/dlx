@@ -18,9 +18,19 @@ def options(opt):
 def configure(conf):
   conf.load('compiler_cxx waf_unit_test')
 
+  # Ensure we have at least the basics from the C++ standard library headers.
+  conf.check(header_name='algorithm', features='cxx cxxprogram', mandatory=True)
+  conf.check(header_name='fstream', features='cxx cxxprogram', mandatory=True)
+  conf.check(header_name='map', features='cxx cxxprogram', mandatory=True)
+  conf.check(header_name='iostream', features='cxx cxxprogram', mandatory=True)
+  conf.check(header_name='string', features='cxx cxxprogram', mandatory=True)
+  conf.check(header_name='vector', features='cxx cxxprogram', mandatory=True)
 
-  # Ensure we have at least one of the C++ standard library headers.
-  conf.check(header_name='vector', features='cxx cxxprogram', mandatory=False)
+  # Ensure we have the C standard library headers that are needed.
+  conf.check(header_name='stdint.h', features='cxx cxxprogram', mandatory=True)
+
+  # Set-up compilier options.
+  conf.env.append_value('CXXFLAGS', ['/W3', '/EHsc'])
 
 
 def build(bld):
@@ -32,7 +42,6 @@ def build(bld):
       'parser/Parser.cpp',
       'parser/Types.cpp',
     ],
-    cxxflags=['/EHsc'],
     target='libdlxasm',
     vnum=VERSION)
 
@@ -43,7 +52,6 @@ def build(bld):
       'ArgumentParser.cpp',
       'Assembler.cpp',
       ],
-    cxxflags=['/EHsc'],
     target='dasm',
     use='libdlxasm',
     )
