@@ -50,16 +50,19 @@ void assemble(const std::string& filename)
 int main(int argc, char* argv[])
 {
   dlx::util::ArgumentParser arguments;
-  // Register arguments.
-  //
+  // TODO: Add the following option.
   //  -o <filename> The name of the object file or directory for saving objects
   //                if multiple source files are provided.
+
+  // Register arguments.
   const size_t optionListing =
     arguments.addOption(
       'l', "listing",
-      "Generates a listing of your program and displays it to the terminal.\n"
-      "The listing shows how the assembler translated the program and\n"
-      "includes the symbol table.");
+      "Generates a listing of the program to the terminal.\n"
+      "The listing shows how the assembler translated the program\n"
+      "and it includes the symbol table.");
+  const size_t optionHelp =
+    arguments.addOption('h', "help", "Display this help and exit.");
   // The following two options are mutally exlusive:
   const size_t optionAbsolute =
     arguments.addOption('a', "absolute", "Generate absoloute machine code.");
@@ -67,10 +70,14 @@ int main(int argc, char* argv[])
     arguments.addOption('r', "relocatable",
                         "Generate relocatable machine code.");
 
-  // TODO: Implement the argument registration and usage.
   const bool suceeded = arguments.parse(argc, argv);
-
   if (!suceeded) return 1;
+
+  if (arguments.provided(optionHelp))
+  {
+    arguments.help(std::cout);
+    return 0;
+  }
 
   if (arguments.provided(optionAbsolute) &&
       arguments.provided(optionRelocatable))
