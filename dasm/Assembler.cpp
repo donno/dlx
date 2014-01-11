@@ -12,6 +12,7 @@
 
 #include "Assembler.hpp"
 
+#include "parser/Instructions.hpp"
 #include "parser/Lexer.hpp"
 #include "parser/Parser.hpp"
 #include "parser/SymbolTable.hpp"
@@ -21,6 +22,22 @@
 #include <iostream>
 #include <iomanip>
 #include <sstream>
+
+#include <stdint.h>
+
+static void outputListing(
+  unsigned long long locationCounter,
+  uint32_t value,
+  const std::string& line,
+  std::ostream& output)
+{
+  output << std::hex << std::uppercase << std::setw(8) << std::setfill('0')
+         << locationCounter << "   "
+         << std::hex << std::uppercase << std::setw(8) << std::setfill('0')
+         << value << "     "
+         << line
+         << std::endl;
+}
 
 void dlx::assembly::Assembler::error(const char* message) const
 {
@@ -143,7 +160,42 @@ void dlx::assembly::Assembler::assemble()
       }
       else
       {
-        std::cout << "Instruction: " << instruction.mnemonic << std::endl;
+        if (instruction.format ==
+            dlx::assembly::Instruction::RegisterToRegister)
+        {
+          Register ri, rj, rk;
+          source >> rk >> ri >> rj;
+
+          // Lookup op-code and modifier for the mnemonic.
+          const auto def =
+            dlx::assembly::instructions::all().find(instruction.mnemonic);
+          // instruction must be found as it was needed to determine the
+          // instruction format.
+
+          const auto opcode = def->second->opcode;
+          const auto modifier = def->second->modifier;
+
+          // Convert instruction to binary representation.
+          // Which is 6-bits for the op-code, three 5-bits for each register.
+          const uint32_t instructionEncoding =
+            modifier + (rk.number << 11) + (rj.number << 16) +
+            (ri.number << 21) + (opcode << 26);
+
+          // This can almost be used for addressing issue #7.
+          // However it is missing the comment and the label if one is on the
+          // start of the line before the instruction.
+          outputListing(myLocationCounter, instructionEncoding, token.value,
+                        std::cout);
+        }
+        else if (instruction.format ==
+                   dlx::assembly::Instruction::Immediate)
+        {
+          std::cout << "Instruction: " << instruction.format << std::endl;
+        }
+        else
+        {
+          std::cout << "Instruction: " << instruction.format << std::endl;
+        }
         myLocationCounter += 4; // An instruction is always 4-bytes.
       }
       break;
