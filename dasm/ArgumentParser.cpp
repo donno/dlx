@@ -24,8 +24,52 @@ size_t dlx::util::ArgumentParser::addOption(
   // TODO: Provide checks to ensure this doesn't conflict with an existing
   // option. That is to say, that flag and name aren't already taken.
   const Option option = {flag, name, help, false};
+  if (myOptions.empty())
+  {
+    myLongestOptionLength = option.name.size();
+  }
+  else
+  {
+    myLongestOptionLength = std::max(option.name.size(), myLongestOptionLength);
+  }
   myOptions.push_back(option);
   return myOptions.size() - 1;
+}
+
+void dlx::util::ArgumentParser::help(std::ostream& out) const
+{
+  out << "Usage: " << myProgramName << " [OPTION] [FILE]..." << std::endl;
+  // TODO: Add a summary/description here.
+  out << std::endl;
+
+  // The column (number of charachters) from the left where the description
+  // part of the help starts (option->help).
+  const size_t helpColumn = myLongestOptionLength + 9;
+  const std::string newLinePadding('\n' + std::string(helpColumn, ' '));
+
+  for (auto option = myOptions.cbegin(), optionEnd = myOptions.cend();
+       option != optionEnd; ++option)
+  {
+    const std::string padding(myLongestOptionLength - option->name.size(), ' ');
+    std::string help = option->help;
+
+    // Replace new lines with a new line and the padding to the help column.
+    for (size_t pos = 0; (pos = help.find('\n', pos)) != std::string::npos;
+         pos += padding.length() + 1)
+    {
+      help.replace(pos, 1, newLinePadding);
+    }
+
+    if (option->flag != '\0')
+    {
+      out << "  -" << option->flag << ", --" << option->name << ' '
+          << padding << help << std::endl;
+    }
+    else
+    {
+      out << "      --" << option->name << padding << ' ' << help << std::endl;
+    }
+  }
 }
 
 bool dlx::util::ArgumentParser::parse(int argc, char* argv[])

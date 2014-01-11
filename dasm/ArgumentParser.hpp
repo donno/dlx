@@ -24,6 +24,7 @@ namespace dlx
     {
       std::string myProgramName;
       std::vector<std::string> myPositionalArugments;
+      size_t myLongestOptionLength;
 
       struct Option
       {
@@ -39,7 +40,7 @@ namespace dlx
       typedef std::vector<std::string>::size_type size_type;
 
       // Output the help to the out stream.
-      //void help(std::ostream& out);
+      void help(std::ostream& out) const;
 
       // Parse the command line arguments and returns if it suceeded without
       // errors.
