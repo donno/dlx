@@ -10,6 +10,7 @@
 //
 //===----------------------------------------------------------------------===//
 
+#include "ArgumentParser.hpp"
 #include "Assembler.hpp"
 
 #include "parser/Lexer.hpp"
@@ -22,140 +23,6 @@
 #include <fstream>
 #include <iostream>
 #include <sstream>
-#include <vector>
-
-namespace
-{
-  // Provides a convenient way of processing command line arguments.
-  class ArgumentParser
-  {
-    std::string myProgramName;
-    std::vector<std::string> myPositionalArugments;
-
-    struct Option
-    {
-      unsigned char flag;
-      std::string name;
-      std::string help;
-      bool provided; // Set if the option appears on the command line.
-    };
-    std::vector<Option> myOptions;
-
-    typedef std::vector<std::string>::const_iterator const_iterator;
-    typedef std::vector<std::string>::size_type size_type;
-  public:
-
-    // Output the help to the out stream.
-    //void help(std::ostream& out);
-
-    // Parse the command line arguments and returns false if there was an error.
-    bool parse(int argc, char* argv[]);
-
-    // Add an option to the parser.
-    //
-    // flag can be '\0' for meaning there is no single charachter (flag) for
-    // triggering this option.
-    //
-    // returns an identifier for determining if its been set.
-    size_t addOption(unsigned char flag, const char* name, const char* help);
-
-    // Get the positional arguments.
-    const_iterator begin() const { return myPositionalArugments.begin(); }
-    const_iterator end() const { return myPositionalArugments.end(); }
-    size_type size() const { return myPositionalArugments.size(); }
-    // Consider adding an operator[] for getting the positional arguments as well.
-
-    // Returns true if the option given by identifier was provided by the user.
-    //
-    // identifier should be a return value for addOption.
-    bool provided(size_t identifier) const;
-  };
-}
-
-size_t ArgumentParser::addOption(
-  unsigned char flag,
-  const char* name,
-  const char* help)
-{
-  // TODO: Provide checks to ensure this doesn't conflict with an existing
-  // option. That is to say, that flag and name aren't already taken.
-  const Option option = {flag, name, help, false};
-  myOptions.push_back(option);
-  return myOptions.size() - 1;
-}
-
-bool ArgumentParser::parse(int argc, char* argv[])
-{
-  myProgramName = std::string(argv[0]);
-
-  // Look for options.
-  bool error = false;
-  for (auto arg = argv + 1; arg != argv + argc; ++arg)
-  {
-    const std::string argument(*arg);
-    if (argument.empty()) continue;
-
-    const size_t length = argument.size();
-
-    // Ignore it as its a positional argument (-) so read from standard-in.
-    if (length == 1) continue;
-
-    if (argument[0] == '-')
-    {
-      if (argument[1] == '-')
-      {
-        // Long option
-        std::cout <<  "Long option" << std::endl;
-        auto option = std::find_if(myOptions.begin(), myOptions.end(),
-                     [&](const Option& option) -> bool {
-                        return option.name == argument.substr(2);
-                     });
-        if (option == myOptions.cend())
-        {
-          std::cerr << "unknown option: " << argument << std::endl;
-          error = true;
-        }
-        else
-        {
-          option->provided = true;
-        }
-      }
-      else
-      {
-        // This is a short option, so each charachter represents an unique
-        // option.
-        //
-        // For each char lookup option. This uses the original char array.
-        for (char* cp = *arg + 1; *cp != '\0'; ++cp)
-        {
-          const char c = *cp;
-          auto option = std::find_if(myOptions.begin(), myOptions.end(),
-                      [c](const Option& option) -> bool {
-                        return option.flag == c;
-                     });
-          if (option == myOptions.cend())
-          {
-            std::cerr << "unknown option: " << argument << std::endl;
-            error = true;
-          }
-          else
-          {
-            option->provided = true;
-          }
-        }
-      }
-      continue;
-    }
-    myPositionalArugments.push_back(argument);
-  }
-
-  return !error;
-}
-
-bool ArgumentParser::provided(size_t identifier) const
-{
-  return myOptions[identifier].provided;
-}
 
 void assemble(const std::string& filename)
 {
@@ -182,7 +49,7 @@ void assemble(const std::string& filename)
 //   stream >> instruction >> rk >> ri >> rj;
 int main(int argc, char* argv[])
 {
-  ArgumentParser arguments;
+  dlx::util::ArgumentParser arguments;
   // Register arguments.
   //
   //  -o <filename> The name of the object file or directory for saving objects

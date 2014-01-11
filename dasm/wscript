@@ -40,6 +40,7 @@ def build(bld):
   bld.program(
     source=[
       'dasm.cpp',
+      'ArgumentParser.cpp',
       'Assembler.cpp',
       ],
     cxxflags=['/EHsc'],
