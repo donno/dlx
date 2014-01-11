@@ -126,7 +126,7 @@ static dlx::assembly::Instruction::Format formatFromMnemonic(
 bool dlx::assembly::startsWithLabel(std::istream& source)
 {
   // If the next character is is an alpha character, it is likely a label.
-  return std::isalpha(source.peek());
+  return std::isalpha(source.peek()) != 0;
 }
 
 std::istream& dlx::assembly::operator >>(
