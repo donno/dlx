@@ -24,7 +24,7 @@
 #include <iostream>
 #include <sstream>
 
-void assemble(const std::string& filename)
+void assemble(const std::string& filename, bool generateListing)
 {
   std::cout << "Assembling " << filename << std::endl;
   std::ifstream file(filename);
@@ -35,7 +35,7 @@ void assemble(const std::string& filename)
     return;
   }
 
-  dlx::assembly::Assembler assembler(filename, file);
+  dlx::assembly::Assembler assembler(filename, file, generateListing);
   assembler.assemble();
   assembler.printSymbolTable();
 }
@@ -86,10 +86,15 @@ int main(int argc, char* argv[])
     return 2;
   }
 
+  const bool generateListing = arguments.provided(optionRelocatable);
+
   if (arguments.size() > 0)
   {
     // Assemble the source files provided on the command line.
-    std::for_each(arguments.begin(), arguments.end(), assemble);
+    std::for_each(
+      arguments.begin(), arguments.end(), 
+      [=](const std::string& filename)
+      { assemble(filename, generateListing); });
     return 0;
   }
 

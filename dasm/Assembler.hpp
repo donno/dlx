@@ -34,12 +34,14 @@ namespace dlx
       dlx::assembly::SymbolTable mySymbolTable;
       dlx::assembly::Label myPreviousLabel;
       unsigned long long myLocationCounter;
+      bool isListingGenerated;
 
       void error(const char* message) const;
       void directive(const std::string& directive, const std::string& operand);
 
     public:
-      Assembler(const std::string& filename, std::istream& source);
+      Assembler(const std::string& filename, std::istream& source,
+                bool outputListing);
 
       void assemble();
 

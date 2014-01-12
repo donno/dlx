@@ -119,13 +119,15 @@ void dlx::assembly::Assembler::directive(
 
 dlx::assembly::Assembler::Assembler(
   const std::string& filename,
-  std::istream& source)
+  std::istream& source,
+  bool generateListing)
 : myFilename(filename),
   mySource(source),
   myLexer(source),
   mySymbolTable(),
   myPreviousLabel(),
-  myLocationCounter(0)
+  myLocationCounter(0),
+  isListingGenerated(generateListing)
 {
 }
 
@@ -137,6 +139,11 @@ void dlx::assembly::Assembler::assemble()
     switch (token.type)
     {
     case dlx::assembly::Token::Comment:
+      if (isListingGenerated)
+      {
+        // TODO: Only add the start of the line if there was just a new-line.
+        std::cout << "                        " << token.value << std::endl;
+      }
       continue;
     case dlx::assembly::Token::Label:
     {
@@ -181,11 +188,14 @@ void dlx::assembly::Assembler::assemble()
             modifier + (rk.number << 11) + (rj.number << 16) +
             (ri.number << 21) + (opcode << 26);
 
-          // This can almost be used for addressing issue #7.
-          // However it is missing the comment and the label if one is on the
-          // start of the line before the instruction.
-          outputListing(myLocationCounter, instructionEncoding, token.value,
-                        std::cout);
+          if (isListingGenerated)
+          {
+            // This can almost be used for addressing issue #7.
+            // However it is missing the comment and the label if one is on the
+            // start of the line before the instruction.
+            outputListing(myLocationCounter, instructionEncoding, token.value,
+              std::cout);
+          }
         }
         else if (instruction.format ==
                    dlx::assembly::Instruction::Immediate)
