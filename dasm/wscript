@@ -3,8 +3,8 @@
 # Build script for using waf.
 
 # the following two variables are used by the target "waf dist"
-VERSION='0.0.1'
-APPNAME='dasm'
+VERSION = '0.0.1'
+APPNAME = 'dasm'
 
 # these variables are mandatory ('/' are converted automatically)
 top = '.'
@@ -12,51 +12,58 @@ out = 'build/dasm'
 
 
 def options(opt):
-  opt.load('compiler_cxx waf_unit_test')
+    opt.load('compiler_cxx waf_unit_test')
 
 
 def configure(conf):
-  conf.load('compiler_cxx waf_unit_test')
+    conf.load('compiler_cxx waf_unit_test')
 
-  # Ensure we have at least the basics from the C++ standard library headers.
-  conf.check(header_name='algorithm', features='cxx cxxprogram', mandatory=True)
-  conf.check(header_name='fstream', features='cxx cxxprogram', mandatory=True)
-  conf.check(header_name='map', features='cxx cxxprogram', mandatory=True)
-  conf.check(header_name='iostream', features='cxx cxxprogram', mandatory=True)
-  conf.check(header_name='string', features='cxx cxxprogram', mandatory=True)
-  conf.check(header_name='vector', features='cxx cxxprogram', mandatory=True)
+    # Ensure we have at least the basics from the C++ standard library headers.
+    features = 'cxx cxxprogram'
+    conf.check(header_name='algorithm', features=features, mandatory=True)
+    conf.check(header_name='fstream', features=features, mandatory=True)
+    conf.check(header_name='map', features=features, mandatory=True)
+    conf.check(header_name='iostream', features=features, mandatory=True)
+    conf.check(header_name='string', features=features, mandatory=True)
+    conf.check(header_name='vector', features=features, mandatory=True)
 
-  # Ensure we have the C standard library headers that are needed.
-  conf.check(header_name='stdint.h', features='cxx cxxprogram', mandatory=True)
+    # Ensure we have the C standard library headers that are needed.
+    conf.check(header_name='stdint.h', features=features, mandatory=True)
 
-  # Set-up compilier options.
-  conf.env.append_value('CXXFLAGS', ['/W3', '/EHsc'])
+    # Set-up compilier options.
+    if conf.env['COMPILER_CXX'] == 'g++':
+        conf.env.append_value('CXXFLAGS', ['-Wfatal-errors', '-pedantic',
+                                           '-std=c++11'])
+    else:
+        conf.env.append_value('CXXFLAGS', ['/W3', '/EHsc'])
 
 
 def build(bld):
-  # Build the core as a library so it can be re-used by future tools and tests.
-  bld.stlib(
-    source=[
-      'parser/Instructions.cpp',
-      'parser/Lexer.cpp',
-      'parser/Parser.cpp',
-      'parser/Types.cpp',
-    ],
-    target='libdlxasm',
-    vnum=VERSION)
+    # Build the core as a library so it can be re-used by future tools and
+    # tests.
+    bld.stlib(
+        source=[
+            'parser/Instructions.cpp',
+            'parser/Lexer.cpp',
+            'parser/Parser.cpp',
+            'parser/Types.cpp',
+        ],
+        target='libdlxasm',
+        vnum=VERSION)
 
-  # Build the executable.
-  bld.program(
-    source=[
-      'dasm.cpp',
-      'ArgumentParser.cpp',
-      'Assembler.cpp',
-      ],
-    target='dasm',
-    use='libdlxasm',
-    )
+    # Build the executable.
+    bld.program(
+        source=[
+            'dasm.cpp',
+            'ArgumentParser.cpp',
+            'Assembler.cpp',
+        ],
+        target='dasm',
+        use='libdlxasm',
+        )
 
-  if bld.cmd != 'clean':
-    from waflib import Logs
-    bld.logger = Logs.make_logger('test.log', 'build') # just to get a clean output
-    bld.logger = None
+    if bld.cmd != 'clean':
+        from waflib import Logs
+        # Just to get a clean ouput.
+        bld.logger = Logs.make_logger('test.log', 'build')
+        bld.logger = None
