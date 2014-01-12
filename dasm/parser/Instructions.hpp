@@ -57,7 +57,7 @@ namespace dlx
       const Definition addi("addi", 001000, Instruction::Immediate);
       const Definition addu("addu", 000000, 100001);
       const Definition addui("addui", 001001, Instruction::Immediate);
-      const Definition and("and", 000000, 100100);
+      const Definition and_("and", 000000, 100100);
       const Definition andi("andi", 001100, Instruction::Immediate);
       const Definition beqz("beqz", 000100, Instruction::Immediate);
       const Definition bnez("bnez", 000101, Instruction::Immediate);
@@ -75,7 +75,7 @@ namespace dlx
       const Definition movi2s("movi2s", 000000, 110000);
       const Definition movs2i("movs2i", 000000, 110001);
       const Definition nop("nop", 000000, 000000);
-      const Definition or("or", 000000, 100101);
+      const Definition or_("or", 000000, 100101);
       const Definition ori("ori", 001101, Instruction::Immediate);
       const Definition rfe("rfe", 010000, Instruction::LongImmediate);
       const Definition sb("sb", 101000, Instruction::Immediate);
@@ -119,7 +119,7 @@ namespace dlx
       const Definition sw("sw", 101011, Instruction::Immediate);
       const Definition trap("trap", 010001, Instruction::LongImmediate);
       const Definition wait("wait", 000000, 000010);
-      const Definition xor("xor", 000000, 100110);
+      const Definition xor_("xor", 000000, 100110);
       const Definition xori("xori", 001110, Instruction::Immediate);
       const Definition addd("addd", 000001, 000100);
       const Definition addf("addf", 000001, 000000);
