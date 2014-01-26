@@ -134,12 +134,18 @@ uint16_t dlx::assembly::Assembler::evaluate(const Immediate& immediate)
     {
       // This also assumes the value in the symbol table is a integer
       // constant.
+      assert(!symbol->second.empty());
       std::istringstream stream(symbol->second);
       uint16_t value = 0;
       stream >> value;
       assert(stream.eof() || stream.good());
       return value;
     }
+
+    // Either there is no symbol by that name or we just haven't seen it yet.
+    //
+    // The latter case needs to be handled to close off issues #11.
+    assert(false);
     return 0;
   }
 }

@@ -8,12 +8,6 @@
 ;         Find the sum of all the multiples of 3 or 5 below 1000        ;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-	.start main
-
-main:
-	jal euler1
-	halt
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;                                                                       ;
 ;       euler1  Computes sum of all multiples of 3 or 5 below 1000      ;
@@ -44,6 +38,12 @@ main:
 ; a was divsible by 3 if it now equals 3.
 ;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+  ; This appears first so it is declared before it is used, simply
+  ; because two passes hasn't been done in the assembler yet.
+euler1_return:
+	jr	r31	; Done
+
 euler1:
 	clr	r1		; r1 is the sum
 	clr	r2		; r2 is the induction variable
@@ -58,7 +58,7 @@ euler1_L1:
 euler1_L3:
 	addi	r2, r2, 5
 	slti	r3, r2, 1000	; Ensure r2 is less than 1000 if not skip.
-	bf	r3, euler1_L5
+	bf	r3, euler1_return
 
 	; Only add r2 to sum if it is not divisble by 3.
 	add	r4, r0, r2  ; r4 = current multiple of 5.
@@ -70,5 +70,16 @@ euler1_L4:
 	bt	r3, euler1_L3	; r2 is a multiple of 3 so don't add it.
 	add	r1, r1, r2	; sum += multiple of 5
 	j	euler1_L3
-euler1_L5:
-	jr	r31	; Done
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;                                                                       ;
+;       main    The entry point for the program.                        ;
+;                                                                       ;
+;       Exit    r1 containing the result                                ;
+;                                                                       ;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+main:
+	jal euler1
+	halt
+
+	.start main
