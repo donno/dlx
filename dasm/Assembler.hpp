@@ -45,6 +45,7 @@ namespace dlx
       // This means if was a numeric constant the value is returned.
       // Otherwise if it is a symbol the value is looked up in the symbol table.
       uint16_t evaluate(const Immediate& immediate);
+      uint32_t evaluate(const LongImmediate& immediate);
 
     public:
       Assembler(const std::string& filename, std::istream& source,

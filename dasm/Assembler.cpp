@@ -150,6 +150,52 @@ uint16_t dlx::assembly::Assembler::evaluate(const Immediate& immediate)
   }
 }
 
+uint32_t dlx::assembly::Assembler::evaluate(const LongImmediate& immediate)
+{
+  const std::locale locale;
+  const size_t count = immediate.expression.size();
+  size_t i = 0;
+  // Skip spaces.
+  for (; i < count && std::isspace(immediate.expression[i], locale) != 0; ++i);
+
+  // Check that there is still something left.
+  assert(i < count);
+
+  const auto leftOver = immediate.expression.substr(i);
+
+  // Extend this to ensure everything is a digit.
+  if (leftOver[0] == '0' || std::isdigit(leftOver[0], locale))
+  {
+    std::istringstream stream(leftOver);
+    uint32_t value;
+    stream >> value;
+    assert(stream.eof() || stream.good());
+    return value;
+  }
+
+  // This would ideally evaluate the expression.
+  //
+  // For now just consider if its a single symbol.
+  const auto symbol = mySymbolTable.find(leftOver);
+  if (symbol != mySymbolTable.end())
+  {
+    // This also assumes the value in the symbol table is a integer
+    // constant.
+    assert(!symbol->second.empty());
+    std::istringstream stream(symbol->second);
+    uint32_t value = 0;
+    stream >> value;
+    assert(stream.eof() || stream.good());
+    return value;
+  }
+
+  // Either there is no symbol by that name or we just haven't seen it yet.
+  //
+  // The latter case needs to be handled to close off issues #11.
+  assert(false);
+  return 0;
+}
+
 dlx::assembly::Assembler::Assembler(
   const std::string& filename,
   std::istream& source,
@@ -251,7 +297,17 @@ void dlx::assembly::Assembler::assemble()
         }
         else
         {
-          std::cout << "Instruction: " << instruction.mnemonic << std::endl;
+          const auto def = instructions::all().find(instruction.mnemonic);
+          const auto opcode = def->second->opcode;
+          LongImmediate immediate;
+          source >> immediate;
+          const uint32_t Lusn = evaluate(immediate); // 24-bit immediate.
+          const uint32_t instructionEncoding = (Lusn & 0xFFFFFF) + (opcode << 26);
+          if (isListingGenerated)
+          {
+            outputListing(myLocationCounter, instructionEncoding, token.value,
+              std::cout);
+          }
         }
         myLocationCounter += 4; // An instruction is always 4-bytes.
       }
