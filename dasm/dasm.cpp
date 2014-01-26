@@ -86,7 +86,7 @@ int main(int argc, char* argv[])
     return 2;
   }
 
-  const bool generateListing = arguments.provided(optionRelocatable);
+  const bool generateListing = arguments.provided(optionListing);
 
   if (arguments.size() > 0)
   {
