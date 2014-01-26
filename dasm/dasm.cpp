@@ -199,4 +199,6 @@ int main(int argc, char* argv[])
         std::cerr << "Unknown" << std::endl;
     };
   }
+
+  return 0;
 }
