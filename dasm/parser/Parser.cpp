@@ -215,4 +215,15 @@ std::istream& dlx::assembly::operator >>(
   return source;
 }
 
+std::istream& dlx::assembly::operator >>(
+  std::istream& source, dlx::assembly::LongImmediate& immediate)
+{
+
+  // This needs to handle expressions (issue #10).
+  //
+  // At the moment it only handles it if its a single word.
+  source >> immediate.expression;
+  return source;
+}
+
 //===--------------------------- End of the file --------------------------===//

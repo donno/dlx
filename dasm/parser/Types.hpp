@@ -75,6 +75,11 @@ namespace dlx
         short Ksgn;
       };
     };
+
+    struct LongImmediate
+    {
+      std::string expression;
+    };
   }
 }
 

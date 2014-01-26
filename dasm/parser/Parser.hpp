@@ -28,6 +28,7 @@ namespace dlx
     struct Label;
     struct Register;
     struct Immediate;
+    struct LongImmediate;
 
     // Determine if there the current line starts with a label.
     bool startsWithLabel(std::istream& source);
@@ -37,6 +38,7 @@ namespace dlx
     std::istream& operator >>(std::istream& source, Comment& comment);
     std::istream& operator >>(std::istream& source, Register& register_);
     std::istream& operator >>(std::istream& source, Immediate& immediate);
+    std::istream& operator >>(std::istream& source, LongImmediate& immediate);
   }
 }
 
