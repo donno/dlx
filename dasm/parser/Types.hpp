@@ -68,6 +68,7 @@ namespace dlx
     // it know if its expected to be signed or not.
     struct Immediate
     {
+      std::string expression;
       union
       {
         unsigned short Kusn;

@@ -19,6 +19,7 @@
 
 #include <fstream>
 
+#include <cstdint>
 #include <map>
 #include <string>
 
@@ -38,6 +39,12 @@ namespace dlx
 
       void error(const char* message) const;
       void directive(const std::string& directive, const std::string& operand);
+
+      // Evaluates an immediate.
+      //
+      // This means if was a numeric constant the value is returned.
+      // Otherwise if it is a symbol the value is looked up in the symbol table.
+      uint16_t evaluate(const Immediate& immediate);
 
     public:
       Assembler(const std::string& filename, std::istream& source,

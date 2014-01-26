@@ -165,6 +165,17 @@ std::istream& dlx::assembly::operator >>(
 std::istream& dlx::assembly::operator >>(
   std::istream& source, dlx::assembly::Register& register_)
 {
+  // Skip spaces.
+  for (; std::isspace(source.peek()) != 0; source.get());
+
+  // Check that the next thing is a register.
+  if (source.peek() != 'r' && source.peek() != 'f')
+  {
+    register_.type = 'm'; // m for missing.
+    register_.number = 0;
+    return source;
+  }
+
   std::string word;
   read(source, word);
 
@@ -181,7 +192,26 @@ std::istream& dlx::assembly::operator >>(
   std::istream& source, dlx::assembly::Immediate& immediate)
 {
   immediate.Kusn = 0;
-  source >> immediate.Kusn;
+
+  // Skip spaces.
+  for (; std::isspace(source.peek()) != 0; source.get());
+
+  // This needs to handle expressions (issue #10).
+  //
+  // When that is done it would be best to just treat numeric constants as
+  // an expression.
+
+  if (source.peek() == '-' || std::isdigit(source.peek()) != 0)
+  {
+    source >> immediate.Kusn;
+  }
+  else
+  {
+    // It wasn't a number so assume it was an expression, at the moment this
+    // only handles if it is a single word which is enough if it is just a
+    // symbol.
+    source >> immediate.expression;
+  }
   return source;
 }
 

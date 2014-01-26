@@ -19,6 +19,7 @@
 #include "parser/Types.hpp"
 
 #include <algorithm>
+#include <cassert>
 #include <iostream>
 #include <iomanip>
 #include <sstream>
@@ -117,6 +118,32 @@ void dlx::assembly::Assembler::directive(
   }
 }
 
+uint16_t dlx::assembly::Assembler::evaluate(const Immediate& immediate)
+{
+  if (immediate.expression.empty())
+  {
+    return immediate.Kusn;
+  }
+  else
+  {
+    // This would ideally evaluate the expression now.
+    //
+    // We just consider if its a single symbol.
+    const auto symbol = mySymbolTable.find(immediate.expression);
+    if (symbol != mySymbolTable.end())
+    {
+      // This also assumes the value in the symbol table is a integer
+      // constant.
+      std::istringstream stream(symbol->second);
+      uint16_t value = 0;
+      stream >> value;
+      assert(stream.eof() || stream.good());
+      return value;
+    }
+    return 0;
+  }
+}
+
 dlx::assembly::Assembler::Assembler(
   const std::string& filename,
   std::istream& source,
@@ -203,15 +230,18 @@ void dlx::assembly::Assembler::assemble()
           const auto def =
             dlx::assembly::instructions::all().find(instruction.mnemonic);
           const auto opcode = def->second->opcode;
-
           Register ri, rj;
           Immediate immediate;
           source >> rj >> ri >> immediate;
-          const uint16_t Kuns = immediate.Kusn; // 16-bit immediate.
+          const uint16_t Kuns = evaluate(immediate); // 16-bit immediate.
           const uint32_t instructionEncoding =
-            Kuns + (rj.number << 16) + (ri.number << 21) + (opcode << 26);
-          outputListing(myLocationCounter, instructionEncoding, token.value,
-                        std::cout);
+            (Kuns & 0xFFFF) + (rj.number << 16) + (ri.number << 21) + (opcode << 26);
+
+          if (isListingGenerated)
+          {
+            outputListing(myLocationCounter, instructionEncoding, token.value,
+              std::cout);
+          }
         }
         else
         {
