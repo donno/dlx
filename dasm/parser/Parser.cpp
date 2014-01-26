@@ -180,6 +180,7 @@ std::istream& dlx::assembly::operator >>(
 std::istream& dlx::assembly::operator >>(
   std::istream& source, dlx::assembly::Immediate& immediate)
 {
+  immediate.Kusn = 0;
   source >> immediate.Kusn;
   return source;
 }

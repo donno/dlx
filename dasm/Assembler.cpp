@@ -98,7 +98,7 @@ void dlx::assembly::Assembler::directive(
     {
       // Convert numbers to integers then output them as hex.
       std::stringstream stream(operand);
-      long long value;
+      unsigned long long value;
       stream >> value;
 
       // TODO: This will need to allocate the space in the output object.
@@ -205,10 +205,9 @@ void dlx::assembly::Assembler::assemble()
           const auto opcode = def->second->opcode;
 
           Register ri, rj;
-          source >> rj >> ri;
-
-          std::cout << "Instruction: " << instruction.mnemonic << std::endl;
-          const uint16_t Kuns = 0; // 16-bit immediate.
+          Immediate immediate;
+          source >> rj >> ri >> immediate;
+          const uint16_t Kuns = immediate.Kusn; // 16-bit immediate.
           const uint32_t instructionEncoding =
             Kuns + (rj.number << 16) + (ri.number << 21) + (opcode << 26);
           outputListing(myLocationCounter, instructionEncoding, token.value,
