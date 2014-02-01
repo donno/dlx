@@ -47,6 +47,7 @@ def build(bld):
             'parser/Lexer.cpp',
             'parser/Parser.cpp',
             'parser/Types.cpp',
+            'writer/ObjectWriter.cpp',
         ],
         target='libdlxasm',
         vnum=VERSION)
