@@ -27,6 +27,8 @@ namespace dlx
 {
   namespace assembly
   {
+    class ObjectWriter;
+
     class Assembler
     {
       std::string myFilename;
@@ -51,7 +53,7 @@ namespace dlx
       Assembler(const std::string& filename, std::istream& source,
                 bool outputListing);
 
-      void assemble();
+      void assemble(ObjectWriter& writer);
 
       void printSymbolTable() const;
     };

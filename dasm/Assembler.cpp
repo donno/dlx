@@ -12,6 +12,8 @@
 
 #include "Assembler.hpp"
 
+#include "writer/ObjectWriter.hpp"
+
 #include "parser/Instructions.hpp"
 #include "parser/Lexer.hpp"
 #include "parser/Parser.hpp"
@@ -210,7 +212,7 @@ dlx::assembly::Assembler::Assembler(
 {
 }
 
-void dlx::assembly::Assembler::assemble()
+void dlx::assembly::Assembler::assemble(ObjectWriter& writer)
 {
   while (!mySource.eof())
   {
@@ -267,6 +269,8 @@ void dlx::assembly::Assembler::assemble()
             modifier + (rk.number << 11) + (rj.number << 16) +
             (ri.number << 21) + (opcode << 26);
 
+          writer << instructionEncoding;
+
           if (isListingGenerated)
           {
             // This can almost be used for addressing issue #7.
@@ -289,6 +293,8 @@ void dlx::assembly::Assembler::assemble()
           const uint32_t instructionEncoding =
             (Kuns & 0xFFFF) + (rj.number << 16) + (ri.number << 21) + (opcode << 26);
 
+          writer << instructionEncoding;
+
           if (isListingGenerated)
           {
             outputListing(myLocationCounter, instructionEncoding, token.value,
@@ -303,6 +309,9 @@ void dlx::assembly::Assembler::assemble()
           source >> immediate;
           const uint32_t Lusn = evaluate(immediate); // 24-bit immediate.
           const uint32_t instructionEncoding = (Lusn & 0xFFFFFF) + (opcode << 26);
+
+          writer << instructionEncoding;
+
           if (isListingGenerated)
           {
             outputListing(myLocationCounter, instructionEncoding, token.value,
@@ -315,6 +324,9 @@ void dlx::assembly::Assembler::assemble()
     }
     }
   }
+
+  // TODO: Look-up the start address in the symbol table and call
+  // writer.SetAddress.
 }
 
 void dlx::assembly::Assembler::printSymbolTable() const

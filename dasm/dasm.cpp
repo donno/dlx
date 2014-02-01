@@ -19,6 +19,8 @@
 #include "parser/SymbolTable.hpp"
 #include "parser/Types.hpp"
 
+#include "writer/ObjectWriter.hpp"
+
 #include <algorithm>
 #include <fstream>
 #include <iostream>
@@ -26,7 +28,17 @@
 
 void assemble(const std::string& filename, bool generateListing)
 {
-  std::cout << "Assembling " << filename << std::endl;
+  std::string outputFilename(filename);
+  if (outputFilename.find_last_of(".dls") != std::string::npos)
+  {
+    outputFilename.back() = 'x';
+  }
+  else
+  {
+    outputFilename.append(".dlx");
+  }
+
+  std::cout << "Assembling " << filename << " to " << outputFilename << std::endl;
   std::ifstream file(filename);
   if (!file)
   {
@@ -35,8 +47,16 @@ void assemble(const std::string& filename, bool generateListing)
     return;
   }
 
+  std::ofstream output(outputFilename);
+  if (!output)
+  {
+    std::cerr << "Failed to open for write: " << outputFilename << std::endl;
+    return;
+  }
+
+  dlx::assembly::ObjectWriter writer(output);
   dlx::assembly::Assembler assembler(filename, file, generateListing);
-  assembler.assemble();
+  assembler.assemble(writer);
   assembler.printSymbolTable();
 }
 
@@ -92,7 +112,7 @@ int main(int argc, char* argv[])
   {
     // Assemble the source files provided on the command line.
     std::for_each(
-      arguments.begin(), arguments.end(), 
+      arguments.begin(), arguments.end(),
       [=](const std::string& filename)
       { assemble(filename, generateListing); });
     return 0;
