@@ -319,8 +319,10 @@ void dlx::assembly::Assembler::assemble(ObjectWriter& writer)
     }
   }
 
-  // TODO: Look-up the start address in the symbol table and call
-  // writer.SetAddress.
+  // Use the evaluate functions to look-up the starting address.
+  const LongImmediate immediate = { "#.start" };
+  const uint32_t startAddress = evaluate(immediate);
+  writer.SetStartAddress(startAddress);
 }
 
 void dlx::assembly::Assembler::printSymbolTable() const
