@@ -181,14 +181,8 @@ uint32_t dlx::assembly::Assembler::evaluate(const LongImmediate& immediate)
   const auto symbol = mySymbolTable.find(leftOver);
   if (symbol != mySymbolTable.end())
   {
-    // This also assumes the value in the symbol table is a integer
-    // constant.
-    assert(!symbol->second.empty());
-    std::istringstream stream(symbol->second);
-    uint32_t value = 0;
-    stream >> value;
-    assert(stream.eof() || stream.good());
-    return value;
+    const LongImmediate currentSymbol = { symbol->second };
+    return evaluate(currentSymbol);
   }
 
   // Either there is no symbol by that name or we just haven't seen it yet.
