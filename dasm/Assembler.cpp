@@ -285,7 +285,7 @@ void dlx::assembly::Assembler::assemble(ObjectWriter& writer)
           source >> rj >> ri >> immediate;
           const uint16_t Kuns = evaluate(immediate); // 16-bit immediate.
           const uint32_t instructionEncoding =
-            (Kuns & 0xFFFF) + (rj.number << 16) + (ri.number << 21) + (opcode << 26);
+            (Kuns & 0xFFFF) + (ri.number << 16) + (rj.number << 21) + (opcode << 26);
 
           writer << instructionEncoding;
 
