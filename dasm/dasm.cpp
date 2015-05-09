@@ -277,5 +277,16 @@ int main(int argc, char* argv[])
       std::cout << "PASSED" << std::endl;
     }
   }
+
+  // This is a test to make sure "movi r1,5" parses to the right machine code.
+  {
+    const char* const instruction = "movi r2,1";
+    const char* const expected = "20 02 00 01";
+    std::cout <<  "Object writer for " << instruction << std::endl;
+    if (checkInstructionEncoding(instruction, expected))
+    {
+      std::cout << "PASSED" << std::endl;
+    }
+  }
   return 0;
 }

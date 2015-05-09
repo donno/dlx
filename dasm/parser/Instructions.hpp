@@ -164,6 +164,8 @@ namespace dlx
       const Definition clr("clr", 8, Instruction::Immediate);
       const Definition bf("bf", 4, Instruction::Immediate); // beq
       const Definition bt("bt", 5, Instruction::Immediate); // bnez
+      const Definition movi("movi", 8, Instruction::Immediate); // addi
+      const Definition mov("mov", 0, 32); // add
     }
   }
 }
