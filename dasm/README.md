@@ -20,13 +20,13 @@ Usage: dasm [OPTION] [FILE]...
                     The listing shows how the assembler translated the program
                     and it includes the symbol table.
   -h, --help        Display this help and exit.
-  -a, --absolute    Generate absoloute machine code.
+  -a, --absolute    Generate absolute machine code.
   -r, --relocatable Generate relocatable machine code.
 
 Examples
 ---------------------
 
-Compiling a DLX source file to absoloute machine code.
+Compiling a DLX source file to absolute machine code.
 
 $ dasm -a euler1.dls
 
