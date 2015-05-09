@@ -257,6 +257,17 @@ void dlx::assembly::Assembler::assemble(ObjectWriter& writer)
           const auto opcode = def->second->opcode;
           const auto modifier = def->second->modifier;
 
+          // Handle if rj is missing.
+          //
+          // The standard format is: mnemonic rk, ri, rj
+          //
+          // Typically if rj is missing, it means rk, rk, ri
+          if (rj.isMissing() && def->second->repeatOnMissing)
+          {
+            rj = ri;
+            ri = rk;
+          }
+
           // Convert instruction to binary representation.
           // Which is 6-bits for the op-code, three 5-bits for each register.
           const uint32_t instructionEncoding =
@@ -285,6 +296,15 @@ void dlx::assembly::Assembler::assemble(ObjectWriter& writer)
 
           source >> rj >> ri >> immediate;
           uint16_t Kuns = evaluate(immediate); // 16-bit immediate.
+
+          // Handle if ri is missing.
+          //
+          // The standard format is: mnemonic rj, ri, imm
+          // If repeating missing registers it means rk, rk, imm
+          if (ri.isMissing() && def->second->repeatOnMissing)
+          {
+            ri = rj;
+          }
 
           // In some cases like "beqz", the immediate is signed and written is
           // relative to the the current location.

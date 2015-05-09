@@ -288,5 +288,17 @@ int main(int argc, char* argv[])
       std::cout << "PASSED" << std::endl;
     }
   }
+
+  // This is a test to make sure "add r1,r2" parses to the right machine code.
+  // add r1,r2 should be equivelent to add r1,r1,r2
+  {
+    const char* const instruction = "add r1,r2";
+    const char* const expected = "00 22 08 20";
+    std::cout <<  "Object writer for " << instruction << std::endl;
+    if (checkInstructionEncoding(instruction, expected))
+    {
+      std::cout << "PASSED" << std::endl;
+    }
+  }
   return 0;
 }
