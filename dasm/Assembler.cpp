@@ -262,7 +262,8 @@ void dlx::assembly::Assembler::assemble(ObjectWriter& writer)
           // The standard format is: mnemonic rk, ri, rj
           //
           // Typically if rj is missing, it means rk, rk, ri
-          if (rj.isMissing() && def->second->repeatOnMissing)
+          if (rj.isMissing() &&
+              def->second->onMissing == dlx::assembly::Repeat)
           {
             rj = ri;
             ri = rk;
@@ -301,9 +302,20 @@ void dlx::assembly::Assembler::assemble(ObjectWriter& writer)
           //
           // The standard format is: mnemonic rj, ri, imm
           // If repeating missing registers it means rk, rk, imm
-          if (ri.isMissing() && def->second->repeatOnMissing)
+          if (ri.isMissing())
           {
-            ri = rj;
+            switch (def->second->onMissing)
+            {
+            case dlx::assembly::Leave:
+              break;
+            case dlx::assembly::Repeat:
+              ri = rj;
+              break;
+            case dlx::assembly::Swap:
+              ri = rj;
+              rj.number = 0;
+              break;
+            }
           }
 
           // In some cases like "beqz", the immediate is signed and written is
@@ -324,21 +336,6 @@ void dlx::assembly::Assembler::assemble(ObjectWriter& writer)
             {
               Kuns = Kuns - static_cast<uint32_t>(myLocationCounter) - 4;
             }
-
-            // The register specified is ri not rj so swap them.
-            ri.number = rj.number;
-            rj.number = 0;
-          }
-
-          // If operands are optional, it depends on the instruction as to which
-          // register is specified.
-          //
-          // TODO: Figure out a better way to do this.
-          if (opcode == 18) // jr
-          {
-            // The register specified is ri not rj.
-            ri.number = rj.number;
-            rj.number = 0;
           }
 
           const uint32_t instructionEncoding =
