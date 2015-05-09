@@ -161,9 +161,9 @@ namespace dlx
       // to other instructions.
       //
       // At the moment, there is no Instruction::Format for these.
-      const Definition clr("clr", 001000, Instruction::Immediate);
-      const Definition bf("bf", 000100, Instruction::Immediate); // beq
-      const Definition bt("bt", 000101, Instruction::Immediate); // bnez
+      const Definition clr("clr", 8, Instruction::Immediate);
+      const Definition bf("bf", 4, Instruction::Immediate); // beq
+      const Definition bt("bt", 5, Instruction::Immediate); // bnez
     }
   }
 }
