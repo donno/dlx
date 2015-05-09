@@ -59,8 +59,13 @@ namespace dlx
 
     struct Register
     {
-      char type; // r = integer, f = floating point.
+      char type; // r = integer, f = floating point, m = missing.
       unsigned short number;
+
+      // Returns true if the register is missing.
+      // It is considered missing if it was not found during parsing and is
+      // found in the shorthand instructions like (addi r1,4) to mean r1 += 4.
+      bool isMissing() const { return type == 'm'; }
     };
 
     // Maybe this should be templated, and have a 16-bit vs 26-bit

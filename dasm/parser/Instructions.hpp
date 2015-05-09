@@ -29,16 +29,23 @@ namespace dlx
       // TODO: Convert opcode from a binary literal encoded as decimal to
       // the appropriate value.
       InstructionDefinition(
-        const std::string& mnemonic, int opcode, Instruction::Format format);
+        const std::string& mnemonic, int opcode, Instruction::Format format,
+        bool repeatOnMissing = true);
 
       // This constructor is for register-to-register instructions.
       explicit InstructionDefinition(
-        const std::string& mnemonic, int opcode, int modifier);
+        const std::string& mnemonic, int opcode, int modifier,
+        bool repeatOnMissing = true);
 
       const std::string mnemonic;
       const int opcode;
       const int modifier; // This is only appliable to register-register format.
       const Instruction::Format format;
+
+      // If a register is not present, it will repeat a register so
+      // addi r2, 4 becomes addi r2, r2, 4
+      // If false then movi r2, 4 becomes r2, r0, 4
+      const bool repeatOnMissing;
     };
 
     namespace instructions
@@ -56,13 +63,13 @@ namespace dlx
       const Definition addui("addui", 9, Instruction::Immediate);
       const Definition and_("and", 0, 36);
       const Definition andi("andi", 12, Instruction::Immediate);
-      const Definition beqz("beqz", 4, Instruction::Immediate);
-      const Definition bnez("bnez", 5, Instruction::Immediate);
-      const Definition halt("halt", 0, 1);
+      const Definition beqz("beqz", 4, Instruction::Immediate, false);
+      const Definition bnez("bnez", 5, Instruction::Immediate, false);
+      const Definition halt("halt", 0, 1, false);
       const Definition j("j", 2, Instruction::LongImmediate);
       const Definition jal("jal", 3, Instruction::LongImmediate);
       const Definition jalr("jalr", 19, Instruction::Immediate);
-      const Definition jr("jr", 18, Instruction::Immediate);
+      const Definition jr("jr", 18, Instruction::Immediate, false);
       const Definition lb("lb", 32, Instruction::Immediate);
       const Definition lbu("lbu", 36, Instruction::Immediate);
       const Definition lh("lh", 33, Instruction::Immediate);
@@ -161,11 +168,11 @@ namespace dlx
       // to other instructions.
       //
       // At the moment, there is no Instruction::Format for these.
-      const Definition clr("clr", 8, Instruction::Immediate);
-      const Definition bf("bf", 4, Instruction::Immediate); // beq
-      const Definition bt("bt", 5, Instruction::Immediate); // bnez
-      const Definition movi("movi", 8, Instruction::Immediate); // addi
-      const Definition mov("mov", 0, 32); // add
+      const Definition clr("clr", 8, Instruction::Immediate, false);
+      const Definition bf("bf", 4, Instruction::Immediate, false); // beq
+      const Definition bt("bt", 5, Instruction::Immediate, false); // bnez
+      const Definition movi("movi", 8, Instruction::Immediate, false); // addi
+      const Definition mov("mov", 0, 32, false); // add
     }
   }
 }

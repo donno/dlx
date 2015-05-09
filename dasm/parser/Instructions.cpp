@@ -27,11 +27,13 @@ dlx::assembly::instructions::all()
 }
 
 dlx::assembly::InstructionDefinition::InstructionDefinition(
-  const std::string& mnemonic, int opcode, Instruction::Format format)
+  const std::string& mnemonic, int opcode, Instruction::Format format,
+  bool repeatOnMissing)
 : mnemonic(mnemonic),
   opcode(opcode),
   modifier(0),
-  format(format)
+  format(format),
+  repeatOnMissing(repeatOnMissing)
 {
   // This construction shouldn't be used for register-to-register instructions.
   assert(format != Instruction::RegisterToRegister);
@@ -39,11 +41,12 @@ dlx::assembly::InstructionDefinition::InstructionDefinition(
 }
 
 dlx::assembly::InstructionDefinition::InstructionDefinition(
-  const std::string& mnemonic, int opcode, int modifier)
+  const std::string& mnemonic, int opcode, int modifier, bool repeatOnMissing)
 : mnemonic(mnemonic),
   opcode(opcode),
   modifier(modifier),
-  format(Instruction::RegisterToRegister)
+  format(Instruction::RegisterToRegister),
+  repeatOnMissing(repeatOnMissing)
 {
   allInstructions().insert(std::make_pair(mnemonic, this));
 }
