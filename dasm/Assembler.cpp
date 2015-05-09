@@ -284,7 +284,31 @@ void dlx::assembly::Assembler::assemble(ObjectWriter& writer)
           Immediate immediate;
 
           source >> rj >> ri >> immediate;
-          const uint16_t Kuns = evaluate(immediate); // 16-bit immediate.
+          uint16_t Kuns = evaluate(immediate); // 16-bit immediate.
+
+          // In some cases like "beqz", the immediate is signed and written is
+          // relative to the the current location.
+          //
+          // TODO: evaluate should needs to return a 32-bit number because if the
+          // address provided via a label exeeds the limits ot 16-bit number the
+          // address will be truncated.
+          if (opcode == instructions::beqz.opcode ||
+              opcode == instructions::bnez.opcode)
+          {
+            if (myLocationCounter > Kuns)
+            {
+              Kuns = static_cast<uint16_t>(
+                -static_cast<int32_t>(myLocationCounter - Kuns) - 4);
+            }
+            else
+            {
+              Kuns = Kuns - static_cast<uint32_t>(myLocationCounter) - 4;
+            }
+
+            // The register specified is ri not rj so swap them.
+            ri.number = rj.number;
+            rj.number = 0;
+          }
 
           // If operands are optional, it depends on the instruction as to which
           // register is specified.
@@ -314,7 +338,23 @@ void dlx::assembly::Assembler::assemble(ObjectWriter& writer)
           const auto opcode = def->second->opcode;
           LongImmediate immediate;
           source >> immediate;
-          const uint32_t Lusn = evaluate(immediate); // 24-bit immediate.
+          uint32_t Lusn = evaluate(immediate); // 24-bit immediate.
+
+          // In some cases like "j", the Lusn written is relative to the the current
+          // location."
+          if (opcode == instructions::j.opcode)
+          {
+            if (myLocationCounter > Lusn)
+            {
+              Lusn = static_cast<uint32_t>(
+                -static_cast<int32_t>(myLocationCounter - Lusn - 4));
+            }
+            else
+            {
+              Lusn = Lusn - static_cast<uint32_t>(myLocationCounter) - 4;
+            }
+          }
+
           const uint32_t instructionEncoding = (Lusn & 0xFFFFFF) + (opcode << 26);
 
           writer << instructionEncoding;
