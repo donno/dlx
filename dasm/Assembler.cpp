@@ -341,21 +341,24 @@ void dlx::assembly::Assembler::assemble(ObjectWriter& writer)
           uint32_t Lusn = evaluate(immediate); // 24-bit immediate.
 
           // In some cases like "j", the Lusn written is relative to the the current
-          // location."
-          if (opcode == instructions::j.opcode)
+          // location.
+          if (opcode == instructions::j.opcode ||
+              opcode == instructions::jal.opcode)
           {
             if (myLocationCounter > Lusn)
             {
               Lusn = static_cast<uint32_t>(
-                -static_cast<int32_t>(myLocationCounter - Lusn - 4));
+                -static_cast<int32_t>(myLocationCounter - Lusn) - 4);
             }
             else
             {
-              Lusn = Lusn - static_cast<uint32_t>(myLocationCounter) - 4;
+              Lusn = Lusn - static_cast<uint32_t>(myLocationCounter - 4);
             }
           }
 
-          const uint32_t instructionEncoding = (Lusn & 0xFFFFFF) + (opcode << 26);
+          const uint32_t instructionEncoding =
+            (Lusn & ((1u << 26) - 1)) + (opcode << 26);
+
 
           writer << instructionEncoding;
 
