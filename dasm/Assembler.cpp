@@ -282,8 +282,21 @@ void dlx::assembly::Assembler::assemble(ObjectWriter& writer)
           const auto opcode = def->second->opcode;
           Register ri, rj;
           Immediate immediate;
+
           source >> rj >> ri >> immediate;
           const uint16_t Kuns = evaluate(immediate); // 16-bit immediate.
+
+          // If operands are optional, it depends on the instruction as to which
+          // register is specified.
+          //
+          // TODO: Figure out a better way to do this.
+          if (opcode == 18) // jr
+          {
+            // The register specified is ri not rj.
+            ri.number = rj.number;
+            rj.number = 0;
+          }
+
           const uint32_t instructionEncoding =
             (Kuns & 0xFFFF) + (rj.number << 16) + (ri.number << 21) + (opcode << 26);
 
