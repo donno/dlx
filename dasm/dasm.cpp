@@ -220,5 +220,31 @@ int main(int argc, char* argv[])
     };
   }
 
+  // This is a test to make sure: "clr" parses to the machine code.
+ {
+    std::cout << std::endl << "Object writer for clr r1" << std::endl;
+    std::istringstream sample(std::string("foo:\tclr r1\n\t.start foo\n"));
+    std::stringstream output;
+    dlx::assembly::ObjectWriter writer(output);
+    dlx::assembly::Assembler assembler("example", sample, false);
+    assembler.assemble(writer);
+
+     // Remove the first line which will be .abs
+     std::string line;
+     std::getline(output, line);
+     if (line != ".abs")
+     {
+       std::cerr << "Missing .abs" << std::endl;
+       return 1;
+     }
+     std::getline(output, line);
+     if (line != "00000000  20 01 00 00")
+     {
+       std::cerr << "Failed to generate the correct machine code for clr r1"
+                 << std::endl;
+       return 1;
+     }
+     std::cout << "PASSED" << std::endl;
+  }
   return 0;
 }
