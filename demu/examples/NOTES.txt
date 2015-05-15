@@ -1,0 +1,12 @@
+euler1.uofa.dlx
+
+Instructions used:
+  add
+  addi
+  bt (bnez)
+  clr (addi)
+  halt
+  jal
+  jr
+  slti
+  sub
