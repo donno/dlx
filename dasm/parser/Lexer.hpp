@@ -55,8 +55,8 @@ namespace dlx
       // from the line. This is a side-effect of reading a line at a time.
       std::string myLeftOvers;
 
-      unsigned int myLine;
-      unsigned int myColumn;
+      std::size_t myLine;
+      std::size_t myColumn;
 
     public:
       Lexer(std::istream& stream)
@@ -64,8 +64,8 @@ namespace dlx
 
       Token Next();
 
-      unsigned int Line() const { return myLine; }
-      unsigned int Column() const { return myColumn; }
+      std::size_t Line() const { return myLine; }
+      std::size_t Column() const { return myColumn; }
     };
   }
 }
