@@ -27,11 +27,11 @@ namespace dlx
 		  inline Register() : value(0) {}
 		  inline Register(std::int32_t inital) : value(inital) {}
 
-		  Register& operator=(std::int32_t value)
-		  { this->value = value; return *this; }
+		  Register& operator=(std::int32_t new_value)
+		  { value = new_value; return *this; }
 
 		  Register& operator=(const Register& that)
-		  { this->value = that.value; return *this; }
+		  { value = that.value; return *this; }
 
 		  std::int32_t value;
 		};
