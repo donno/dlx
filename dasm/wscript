@@ -30,7 +30,7 @@ def configure(conf):
     # Ensure we have the C standard library headers that are needed.
     conf.check(header_name='stdint.h', features=features, mandatory=True)
 
-    # Set-up compilier options.
+    # Set-up compiler options.
     if conf.env['COMPILER_CXX'] == 'g++':
         conf.env.append_value('CXXFLAGS', ['-Wfatal-errors', '-pedantic',
                                            '-std=c++11'])
@@ -65,6 +65,6 @@ def build(bld):
 
     if bld.cmd != 'clean':
         from waflib import Logs
-        # Just to get a clean ouput.
+        # Just to get a clean output.
         bld.logger = Logs.make_logger('test.log', 'build')
         bld.logger = None

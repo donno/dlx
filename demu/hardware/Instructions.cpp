@@ -30,7 +30,7 @@ static void HandleFormatRInstructions(dlx::hardware::DLXMachine* machine)
 {
   const auto instruction =
     machine->instruction(dlx::hardware::InstructionRegisterToRegister());
-  std::cout << "Executing a format R instruction modifer="
+  std::cout << "Executing a format R instruction modifier="
             <<  instruction.modifier
             << std::endl;
   if (dlx::hardware::InstructionsFormatR[instruction.modifier])
@@ -63,7 +63,7 @@ namespace dlx
 		{
 		  typedef Format format_type;
 
-		  // Reurns the instruction ecoding for the given instruction as read
+		  // Reurns the instruction encoding for the given instruction as read
 		  // from the machine.
 		  static format_type Instruction(hardware::DLXMachine* machine);
 		};

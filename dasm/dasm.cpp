@@ -119,15 +119,15 @@ int main(int argc, char* argv[])
       "and it includes the symbol table.");
   const size_t optionHelp =
     arguments.addOption('h', "help", "Display this help and exit.");
-  // The following two options are mutally exlusive:
+  // The following two options are mutually exclusive:
   const size_t optionAbsolute =
-    arguments.addOption('a', "absolute", "Generate absoloute machine code.");
+    arguments.addOption('a', "absolute", "Generate absolute machine code.");
   const size_t optionRelocatable =
     arguments.addOption('r', "relocatable",
                         "Generate relocatable machine code.");
 
-  const bool suceeded = arguments.parse(argc, argv);
-  if (!suceeded) return 1;
+  const bool succeeded = arguments.parse(argc, argv);
+  if (!succeeded) return 1;
 
   if (arguments.provided(optionHelp))
   {

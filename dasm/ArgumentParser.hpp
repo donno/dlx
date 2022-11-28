@@ -6,7 +6,7 @@
 //
 // NAME         : ArgumentParser
 // NAMESPACE    : dlx::util
-// PURPOSE      : Provides a facility for registring and parsing arguments.
+// PURPOSE      : Provides a facility for registering and parsing arguments.
 // COPYRIGHT    : (c) 2014 Sean Donnellan.
 // LICENSE      : The MIT License (see LICENSE.txt)
 // AUTHORS      : Sean Donnellan (darkdonno@gmail.com)
@@ -23,7 +23,7 @@ namespace dlx
     class ArgumentParser
     {
       std::string myProgramName;
-      std::vector<std::string> myPositionalArugments;
+      std::vector<std::string> myPositionalArguments;
       size_t myLongestOptionLength;
 
       struct Option
@@ -42,22 +42,22 @@ namespace dlx
       // Output the help to the out stream.
       void help(std::ostream& out) const;
 
-      // Parse the command line arguments and returns if it suceeded without
+      // Parse the command line arguments and returns if it succeeded without
       // errors.
       bool parse(int argc, char* argv[]);
 
       // Add an option to the parser.
       //
-      // flag can be '\0' for meaning there is no single charachter (flag) for
+      // flag can be '\0' for meaning there is no single character (flag) for
       // triggering this option.
       //
       // returns an identifier for determining if its been set.
       size_t addOption(unsigned char flag, const char* name, const char* help);
 
       // Get the positional arguments.
-      const_iterator begin() const { return myPositionalArugments.begin(); }
-      const_iterator end() const { return myPositionalArugments.end(); }
-      size_type size() const { return myPositionalArugments.size(); }
+      const_iterator begin() const { return myPositionalArguments.begin(); }
+      const_iterator end() const { return myPositionalArguments.end(); }
+      size_type size() const { return myPositionalArguments.size(); }
 
       // TODO: Consider adding an operator[] for getting the positional
       // arguments as well.

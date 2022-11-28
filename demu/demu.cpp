@@ -194,7 +194,7 @@ void LoadDlxFile(const char *filename, dlx::hardware::DLXMachine* machine)
         }
         else
         {
-          // For simplicty assume they are always in pairs.
+          // For simplicity assume they are always in pairs.
           // I.e a hexadecimal digit is followed by another one.
           const auto c2 = std::toupper(line[i + 1]);
           ++i;

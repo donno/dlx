@@ -109,7 +109,7 @@ bool dlx::util::ArgumentParser::parse(int argc, char* argv[])
       }
       else
       {
-        // This is a short option, so each charachter represents an unique
+        // This is a short option, so each character represents an unique
         // option.
         //
         // For each char lookup option. This uses the original char array.
@@ -133,7 +133,7 @@ bool dlx::util::ArgumentParser::parse(int argc, char* argv[])
       }
       continue;
     }
-    myPositionalArugments.push_back(argument);
+    myPositionalArguments.push_back(argument);
   }
 
   return !error;

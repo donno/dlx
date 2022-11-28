@@ -38,7 +38,7 @@
 ; for (int a = 15; a < 1000; a += 15)
 ;   sum -= a
 ;
-; With that said the assembly below makes a simplfication by starting a at 0,
+; With that said the assembly below makes a simplification by starting a at 0,
 ; so it does a sum += 0
 ;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

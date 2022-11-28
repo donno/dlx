@@ -12,7 +12,7 @@
 // AUTHORS      : Sean Donnellan (darkdonno@gmail.com)
 // DESCRIPTION  : Converts a sequence of characters into a sequence of tokens.
 //
-//                A token is there by a grouping of consequentive charachters
+//                A token is there by a grouping of consecutive characters
 //                that form a certain meaning.
 //
 //                Comments can optionally be ignored by the lexer so it will

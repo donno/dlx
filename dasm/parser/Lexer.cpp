@@ -9,7 +9,7 @@
 // LICENSE      : The MIT License (see LICENSE.txt)
 // NOTES        : Notes about the specification.
 //
-// The start of a line can be a space/tab, a comment charachter or a letter.
+// The start of a line can be a space/tab, a comment character or a letter.
 // These are treated as instruction, comment, label respectively.
 //
 // Label = [a-zA-Z][a-zA-Z0-9]+[:]
@@ -56,14 +56,14 @@ dlx::assembly::Token dlx::assembly::Lexer::Next()
   {
     token.type = Token::Instruction;
 
-    // Find the first non-whitespace charachter on the rest of the line.
+    // Find the first non-whitespace character on the rest of the line.
     //
-    // If the first non-whitespace charachter is a charachter then there is no
+    // If the first non-whitespace character is a character then there is no
     // instruction. This is likely because the user is trying to line up the
     // comment with the one of the previous line and instruction.
     const auto newStart = line.find_first_not_of(" \t");
 
-    // Find the first comment charachter on the line as this indicates the
+    // Find the first comment character on the line as this indicates the
     // end of the instruction.
     const auto currentEnd =
       std::find(line.cbegin() + newStart, line.cend(), ';');
